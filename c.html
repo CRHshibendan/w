@@ -88,7 +88,12 @@
     padding: 14px; background: rgba(255,255,255,0.95); border-radius: 20px;
     box-shadow: 0 8px 30px rgba(124,92,255,0.25); position: relative;
     transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
-    cursor: pointer;
+    cursor: pointer; overflow: hidden;
+    animation: qrBreath 3s ease-in-out infinite;
+  }
+  @keyframes qrBreath {
+    0%, 100% { box-shadow: 0 8px 30px rgba(124,92,255,0.25); }
+    50% { box-shadow: 0 8px 40px rgba(124,92,255,0.5); }
   }
   .qr-box:active { transform: scale(0.96); }
   .qr-box::before {
@@ -96,8 +101,39 @@
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     z-index: -1; opacity: 0.5; filter: blur(8px);
   }
-  #qrcode { display: block; }
+  #qrcode { display: block; position: relative; z-index: 1; }
   #qrcode img { display: block; border-radius: 4px; }
+
+  /* 扫描线 */
+  .scan-line {
+    position: absolute; left: 10px; right: 10px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+    box-shadow: 0 0 12px var(--accent), 0 0 4px var(--accent2);
+    z-index: 2; border-radius: 2px;
+    animation: scanMove 2.2s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes scanMove {
+    0% { top: 14px; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: calc(100% - 16px); opacity: 0; }
+  }
+
+  /* 四角装饰 */
+  .corner {
+    position: absolute; width: 20px; height: 20px;
+    border-color: var(--accent); border-style: solid; border-width: 0;
+    z-index: 3; pointer-events: none;
+  }
+  .corner.tl { top: 4px; left: 4px; border-top-width: 3px; border-left-width: 3px; border-top-left-radius: 6px; animation: cornerPulse 2s ease-in-out infinite; }
+  .corner.tr { top: 4px; right: 4px; border-top-width: 3px; border-right-width: 3px; border-top-right-radius: 6px; animation: cornerPulse 2s ease-in-out 0.5s infinite; }
+  .corner.bl { bottom: 4px; left: 4px; border-bottom-width: 3px; border-left-width: 3px; border-bottom-left-radius: 6px; animation: cornerPulse 2s ease-in-out 1s infinite; }
+  .corner.br { bottom: 4px; right: 4px; border-bottom-width: 3px; border-right-width: 3px; border-bottom-right-radius: 6px; animation: cornerPulse 2s ease-in-out 1.5s infinite; }
+  @keyframes cornerPulse {
+    0%, 100% { opacity: 0.4; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1); }
+  }
 
   .info-group { display: flex; flex-direction: column; gap: 8px; }
   .info-row {
@@ -190,7 +226,14 @@
     </div>
 
     <div class="qr-section">
-      <div class="qr-box" id="qrBox"><div id="qrcode"></div></div>
+      <div class="qr-box" id="qrBox">
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+        <div id="qrcode"></div>
+        <div class="scan-line"></div>
+      </div>
     </div>
 
     <div class="info-group">
