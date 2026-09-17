@@ -196,12 +196,15 @@
     const hash = location.hash.slice(1);
     if (!hash) return null;
     try {
-      const json = decodeURIComponent(escape(atob(hash)));
-      const obj = JSON.parse(json);
+      let b64 = hash;
+      while (b64.length % 4) b64 += '=';
+      const raw = decodeURIComponent(escape(atob(b64)));
+      const parts = raw.split('|');
+      const encMap = { '0': 'WPA', '1': 'WEP', '2': 'nopass' };
       return {
-        ssid: obj.s,
-        password: obj.p || '',
-        encryption: obj.e || 'WPA',
+        ssid: parts[0],
+        password: parts[1] || '',
+        encryption: encMap[parts[2]] || 'WPA',
         hidden: false
       };
     } catch(e) {

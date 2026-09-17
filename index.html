@@ -307,13 +307,14 @@
   }
 
   function encodeConfig(cfg) {
-    const json = JSON.stringify({ s: cfg.ssid, p: cfg.password, e: cfg.encryption });
-    return btoa(unescape(encodeURIComponent(json)));
+    const encMap = { 'WPA': '0', 'WEP': '1', 'nopass': '2' };
+    const raw = `${cfg.ssid}|${cfg.password}|${encMap[cfg.encryption] || '0'}`;
+    return btoa(unescape(encodeURIComponent(raw))).replace(/=+$/, '');
   }
 
   function getSubUrl(id) {
     const base = location.href.replace(/[^/]*$/, '');
-    return base + 'wifi.html#' + id;
+    return base + 'c.html#' + id;
   }
 
   function showToast(msg) {
