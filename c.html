@@ -201,9 +201,14 @@
   .error-card svg { width: 56px; height: 56px; color: #e74c3c; margin-bottom: 14px; }
   .error-card h2 { font-size: 18px; margin-bottom: 8px; }
   .error-card p { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+
+  #particles {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  }
 </style>
 </head>
 <body>
+  <canvas id="particles"></canvas>
   <svg width="0" height="0" style="position:absolute">
     <defs>
       <linearGradient id="wifiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -279,6 +284,66 @@
   </div>
 
 <script>
+  // 粒子动画背景
+  (function() {
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [];
+    const COLORS = ['rgba(124,92,255,', 'rgba(91,141,239,', 'rgba(160,130,255,'];
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      const count = Math.min(50, Math.floor(W * H / 18000));
+      particles = [];
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4,
+          r: Math.random() * 1.8 + 0.6,
+          c: COLORS[Math.floor(Math.random() * COLORS.length)],
+          a: Math.random() * 0.4 + 0.2
+        });
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > W) p.vx *= -1;
+        if (p.y < 0 || p.y > H) p.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.c + p.a + ')';
+        ctx.fill();
+
+        for (let j = i + 1; j < particles.length; j++) {
+          const q = particles[j];
+          const dx = p.x - q.x, dy = p.y - q.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = p.c + (0.12 * (1 - dist / 120)) + ')';
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    draw();
+  })();
+
   function parseConfig() {
     const hash = location.hash.slice(1);
     if (!hash) return null;
