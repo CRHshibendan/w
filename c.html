@@ -9,23 +9,15 @@
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
   :root {
-    --bg1: #0f0c29;
-    --bg2: #302b63;
-    --bg3: #24243e;
-    --accent: #7c5cff;
-    --accent2: #5b8def;
-    --text: #ffffff;
-    --text-dim: rgba(255,255,255,0.6);
-    --text-faint: rgba(255,255,255,0.35);
+    --bg1: #0f0c29; --bg2: #302b63; --bg3: #24243e;
+    --accent: #7c5cff; --accent2: #5b8def;
+    --text: #ffffff; --text-dim: rgba(255,255,255,0.6); --text-faint: rgba(255,255,255,0.35);
   }
 
   body {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", sans-serif;
-    height: 100vh;
-    height: 100dvh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 100vh; height: 100dvh;
+    display: flex; align-items: center; justify-content: center;
     padding: 16px;
     background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 50%, var(--bg3) 100%);
     color: var(--text);
@@ -34,40 +26,19 @@
     position: relative;
   }
 
-  /* 浮动光斑 */
   body::before, body::after {
-    content: '';
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.4;
-    pointer-events: none;
-    z-index: 0;
+    content: ''; position: fixed; border-radius: 50%;
+    filter: blur(90px); opacity: 0.4; pointer-events: none; z-index: 0;
   }
-  body::before {
-    width: 300px; height: 300px;
-    background: var(--accent);
-    top: -100px; left: -80px;
-    animation: float1 8s ease-in-out infinite;
-  }
-  body::after {
-    width: 280px; height: 280px;
-    background: var(--accent2);
-    bottom: -100px; right: -80px;
-    animation: float2 10s ease-in-out infinite;
-  }
-  @keyframes float1 {
-    0%, 100% { transform: translate(0, 0); }
-    50% { transform: translate(40px, 30px); }
-  }
-  @keyframes float2 {
-    0%, 100% { transform: translate(0, 0); }
-    50% { transform: translate(-30px, -40px); }
-  }
+  body::before { width: 320px; height: 320px; background: var(--accent); top: -110px; left: -90px; animation: float1 8s ease-in-out infinite; }
+  body::after { width: 280px; height: 280px; background: var(--accent2); bottom: -110px; right: -90px; animation: float2 10s ease-in-out infinite; }
+  @keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(40px,30px)} }
+  @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-30px,-40px)} }
+
+  #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
   .card {
-    width: 100%;
-    max-width: 360px;
+    width: 100%; max-width: 360px;
     background: rgba(255,255,255,0.08);
     backdrop-filter: blur(30px) saturate(180%);
     -webkit-backdrop-filter: blur(30px) saturate(180%);
@@ -75,19 +46,18 @@
     border-radius: 28px;
     padding: 26px 22px 22px;
     box-shadow: 0 25px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
-    animation: cardIn 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-    position: relative;
-    z-index: 1;
+    position: relative; z-index: 1;
+    opacity: 0; transform: translateY(40px) scale(0.92);
+    filter: blur(8px);
+    animation: cardIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
   @keyframes cardIn {
-    from { opacity: 0; transform: translateY(30px) scale(0.96); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
+    to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
   }
 
-  .header { text-align: center; margin-bottom: 16px; }
+  .header { text-align: center; margin-bottom: 16px; opacity: 0; animation: fadeUp 0.6s 0.2s cubic-bezier(0.16,1,0.3,1) forwards; }
   .wifi-icon {
-    width: 52px; height: 52px;
-    margin: 0 auto 12px;
+    width: 52px; height: 52px; margin: 0 auto 12px;
     display: flex; align-items: center; justify-content: center;
   }
   .wifi-icon svg { width: 100%; height: 100%; }
@@ -108,27 +78,23 @@
   .ssid-text {
     font-size: 17px; font-weight: 700;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     margin-top: 3px; word-break: break-all;
   }
   .subtitle { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
 
-  .qr-section { display: flex; justify-content: center; margin-bottom: 14px; }
+  .qr-section { display: flex; justify-content: center; margin-bottom: 14px; opacity: 0; animation: fadeUp 0.6s 0.32s cubic-bezier(0.16,1,0.3,1) forwards; }
   .qr-box {
-    padding: 12px; background: rgba(255,255,255,0.95);
-    border-radius: 18px;
-    box-shadow: 0 8px 30px rgba(124,92,255,0.25);
-    position: relative;
+    padding: 12px; background: rgba(255,255,255,0.95); border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(124,92,255,0.25); position: relative;
+    transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+    cursor: pointer;
   }
+  .qr-box:active { transform: scale(0.96); }
   .qr-box::before {
-    content: '';
-    position: absolute; inset: -2px;
-    border-radius: 20px;
+    content: ''; position: absolute; inset: -2px; border-radius: 20px;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
-    z-index: -1;
-    opacity: 0.5;
-    filter: blur(8px);
+    z-index: -1; opacity: 0.5; filter: blur(8px);
   }
   #qrcode { display: block; }
   #qrcode img { display: block; border-radius: 4px; }
@@ -141,25 +107,25 @@
     box-shadow: 0 8px 25px rgba(124,92,255,0.4);
     transition: transform 0.2s, box-shadow 0.2s;
     margin-bottom: 12px; text-decoration: none;
-    position: relative;
-    overflow: hidden;
-  }
-  .connect-btn::before {
-    content: '';
-    position: absolute; top: 0; left: -100%;
-    width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s;
+    position: relative; overflow: hidden;
+    opacity: 0; animation: fadeUp 0.6s 0.44s cubic-bezier(0.16,1,0.3,1) forwards;
   }
   .connect-btn:active { transform: scale(0.97); box-shadow: 0 4px 15px rgba(124,92,255,0.4); }
-  .connect-btn:active::before { left: 100%; }
   .connect-btn svg { width: 19px; height: 19px; }
+  .ripple {
+    position: absolute; border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+    transform: scale(0); animation: ripple 0.6s ease-out;
+    pointer-events: none;
+  }
+  @keyframes ripple { to { transform: scale(4); opacity: 0; } }
 
   .platform-tip {
     text-align: center; font-size: 11px; color: var(--text-dim);
     padding: 8px 12px; background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px; margin-bottom: 14px; line-height: 1.4;
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;
+    margin-bottom: 14px; line-height: 1.4;
+    opacity: 0; animation: fadeUp 0.6s 0.56s cubic-bezier(0.16,1,0.3,1) forwards;
   }
   .platform-tip strong { color: var(--accent2); }
 
@@ -167,10 +133,12 @@
   .info-row {
     display: flex; align-items: center; justify-content: space-between;
     padding: 11px 14px; background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 14px;
     transition: background 0.2s;
+    opacity: 0; animation: fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
   }
+  .info-row:nth-child(1) { animation-delay: 0.68s; }
+  .info-row:nth-child(2) { animation-delay: 0.78s; }
   .info-label {
     font-size: 10px; color: var(--text-faint); text-transform: uppercase;
     letter-spacing: 0.8px; margin-bottom: 2px; font-weight: 500;
@@ -178,33 +146,51 @@
   .info-value {
     font-size: 14px; font-weight: 600; color: var(--text);
     word-break: break-all; flex: 1; min-width: 0; margin-right: 8px; user-select: all;
+    transition: color 0.3s;
   }
+  .info-value.copied-flash { color: #4caf50; }
+
   .copy-btn {
-    flex-shrink: 0; width: 32px; height: 32px; border: none;
+    flex-shrink: 0; width: 34px; height: 34px; border: none;
     background: rgba(124,92,255,0.2); color: var(--accent);
     border-radius: 10px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s cubic-bezier(0.16,1,0.3,1);
   }
-  .copy-btn:active { transform: scale(0.88); background: rgba(124,92,255,0.35); }
-  .copy-btn svg { width: 16px; height: 16px; }
+  .copy-btn:active { transform: scale(0.85); }
+  .copy-btn svg { width: 17px; height: 17px; transition: transform 0.2s; }
   .copy-btn.copied { background: rgba(76,175,80,0.25); color: #4caf50; }
+  .copy-btn.copied svg { animation: pop 0.4s cubic-bezier(0.16,1,0.3,1); }
+  @keyframes pop { 0%{transform:scale(0.5)} 60%{transform:scale(1.2)} 100%{transform:scale(1)} }
+
   .toggle-pwd {
-    flex-shrink: 0; width: 32px; height: 32px; border: none;
+    flex-shrink: 0; width: 34px; height: 34px; border: none;
     background: transparent; cursor: pointer;
     display: flex; align-items: center; justify-content: center; margin-right: 2px;
+    transition: transform 0.2s;
   }
-  .toggle-pwd svg { width: 18px; height: 18px; color: var(--text-faint); }
+  .toggle-pwd:active { transform: scale(0.85); }
+  .toggle-pwd svg { width: 18px; height: 18px; color: var(--text-faint); transition: color 0.2s; }
+  .toggle-pwd.active svg { color: var(--accent); }
 
-  .error-card {
-    text-align: center; padding: 30px 20px;
-  }
+  .error-card { text-align: center; padding: 30px 20px; }
   .error-card svg { width: 56px; height: 56px; color: #e74c3c; margin-bottom: 14px; }
   .error-card h2 { font-size: 18px; margin-bottom: 8px; }
   .error-card p { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
 
-  #particles {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
   }
+
+  .toast {
+    position: fixed; top: 30px; left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+    color: #fff; padding: 10px 22px; border-radius: 20px; font-size: 13px;
+    z-index: 200; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
@@ -234,7 +220,7 @@
     </div>
 
     <div class="qr-section">
-      <div class="qr-box"><div id="qrcode"></div></div>
+      <div class="qr-box" id="qrBox"><div id="qrcode"></div></div>
     </div>
 
     <a id="connectBtn" class="connect-btn" href="#">
@@ -255,12 +241,6 @@
           <div class="info-label">网络名称</div>
           <div class="info-value" id="ssid">—</div>
         </div>
-        <button class="copy-btn" data-copy="ssid" aria-label="复制">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-          </svg>
-        </button>
       </div>
       <div class="info-row" id="pwdRow">
         <div style="flex:1; min-width:0;">
@@ -273,7 +253,7 @@
             <circle cx="12" cy="12" r="3"></circle>
           </svg>
         </button>
-        <button class="copy-btn" data-copy="password" aria-label="复制">
+        <button class="copy-btn" data-copy="password" aria-label="复制密码">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -282,6 +262,8 @@
       </div>
     </div>
   </div>
+
+  <div class="toast" id="toast"></div>
 
 <script>
   // 粒子动画背景
@@ -298,10 +280,8 @@
       particles = [];
       for (let i = 0; i < count; i++) {
         particles.push({
-          x: Math.random() * W,
-          y: Math.random() * H,
-          vx: (Math.random() - 0.5) * 0.4,
-          vy: (Math.random() - 0.5) * 0.4,
+          x: Math.random() * W, y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
           r: Math.random() * 1.8 + 0.6,
           c: COLORS[Math.floor(Math.random() * COLORS.length)],
           a: Math.random() * 0.4 + 0.2
@@ -316,32 +296,26 @@
         p.x += p.vx; p.y += p.vy;
         if (p.x < 0 || p.x > W) p.vx *= -1;
         if (p.y < 0 || p.y > H) p.vy *= -1;
-
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fillStyle = p.c + p.a + ')';
         ctx.fill();
-
         for (let j = i + 1; j < particles.length; j++) {
           const q = particles[j];
           const dx = p.x - q.x, dy = p.y - q.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < 120) {
             ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(q.x, q.y);
+            ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
             ctx.strokeStyle = p.c + (0.12 * (1 - dist / 120)) + ')';
-            ctx.lineWidth = 0.6;
-            ctx.stroke();
+            ctx.lineWidth = 0.6; ctx.stroke();
           }
         }
       }
       requestAnimationFrame(draw);
     }
-
     window.addEventListener('resize', resize);
-    resize();
-    draw();
+    resize(); draw();
   })();
 
   function parseConfig() {
@@ -359,6 +333,15 @@
 
   const cfg = parseConfig();
   const card = document.getElementById('card');
+  const toast = document.getElementById('toast');
+  let toastTimer;
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
 
   if (!cfg || !cfg.ssid) {
     card.innerHTML = `
@@ -382,6 +365,7 @@
     const platformTip = document.getElementById('platformTip');
     const subtitle = document.getElementById('subtitle');
     const qrcodeEl = document.getElementById('qrcode');
+    const copyBtn = document.querySelector('.copy-btn');
 
     ssidEl.textContent = cfg.ssid;
     ssidText.textContent = cfg.ssid;
@@ -390,6 +374,7 @@
     function renderPwd() {
       pwdEl.textContent = pwdVisible ? cfg.password : '••••••••';
       pwdEl.style.letterSpacing = pwdVisible ? 'normal' : '2px';
+      toggleBtn.classList.toggle('active', pwdVisible);
     }
     if (cfg.encryption === 'nopass') {
       pwdRow.style.display = 'none';
@@ -422,7 +407,7 @@
     if (isIOS) {
       connectBtnText.textContent = '长按二维码保存连接';
       connectBtn.removeAttribute('href');
-      connectBtn.addEventListener('click', (e) => { e.preventDefault(); qrcodeEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); });
+      connectBtn.addEventListener('click', (e) => { e.preventDefault(); });
       platformTip.innerHTML = '<strong>iOS</strong>：长按二维码存到照片，在相册长按识别即可连接';
       subtitle.textContent = '保存二维码即可自动连接';
     } else if (isAndroid && !isWeChat) {
@@ -437,25 +422,47 @@
       platformTip.innerHTML = '<strong>提示</strong>：请在手机浏览器中打开以使用一键连接';
     }
 
-    document.querySelectorAll('.copy-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const target = btn.dataset.copy;
-        const text = cfg[target];
-        try { await navigator.clipboard.writeText(text); }
-        catch(err) {
+    // 涟漪效果
+    connectBtn.addEventListener('click', function(e) {
+      const rect = this.getBoundingClientRect();
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple';
+      const size = Math.max(rect.width, rect.height);
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+      ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+      this.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    });
+
+    // 复制密码
+    copyBtn.addEventListener('click', () => {
+      // 先显示视觉反馈
+      copyBtn.classList.add('copied');
+      const origHtml = copyBtn.innerHTML;
+      copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+      pwdEl.classList.add('copied-flash');
+      showToast('密码已复制');
+
+      // 异步执行复制，不阻塞UI
+      const doCopy = async () => {
+        try {
+          await navigator.clipboard.writeText(cfg.password);
+        } catch(err) {
           const ta = document.createElement('textarea');
-          ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+          ta.value = cfg.password; ta.style.position='fixed'; ta.style.opacity='0';
           document.body.appendChild(ta); ta.select();
           try { document.execCommand('copy'); } catch(e){}
           document.body.removeChild(ta);
         }
-        btn.classList.add('copied');
-        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-        setTimeout(() => {
-          btn.classList.remove('copied');
-          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
-        }, 1500);
-      });
+      };
+      doCopy();
+
+      setTimeout(() => {
+        copyBtn.classList.remove('copied');
+        copyBtn.innerHTML = origHtml;
+        pwdEl.classList.remove('copied-flash');
+      }, 1600);
     });
   }
 </script>
