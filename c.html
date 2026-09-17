@@ -83,51 +83,21 @@
   }
   .subtitle { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
 
-  .qr-section { display: flex; justify-content: center; margin-bottom: 14px; opacity: 0; animation: fadeUp 0.6s 0.32s cubic-bezier(0.16,1,0.3,1) forwards; }
+  .qr-section { display: flex; justify-content: center; margin-bottom: 16px; opacity: 0; animation: fadeUp 0.6s 0.32s cubic-bezier(0.16,1,0.3,1) forwards; }
   .qr-box {
-    padding: 12px; background: rgba(255,255,255,0.95); border-radius: 18px;
+    padding: 14px; background: rgba(255,255,255,0.95); border-radius: 20px;
     box-shadow: 0 8px 30px rgba(124,92,255,0.25); position: relative;
     transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
     cursor: pointer;
   }
   .qr-box:active { transform: scale(0.96); }
   .qr-box::before {
-    content: ''; position: absolute; inset: -2px; border-radius: 20px;
+    content: ''; position: absolute; inset: -2px; border-radius: 22px;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     z-index: -1; opacity: 0.5; filter: blur(8px);
   }
   #qrcode { display: block; }
   #qrcode img { display: block; border-radius: 4px; }
-
-  .connect-btn {
-    width: 100%; padding: 14px; border: none; border-radius: 16px;
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-    color: #fff; font-size: 15px; font-weight: 600; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    box-shadow: 0 8px 25px rgba(124,92,255,0.4);
-    transition: transform 0.2s, box-shadow 0.2s;
-    margin-bottom: 12px; text-decoration: none;
-    position: relative; overflow: hidden;
-    opacity: 0; animation: fadeUp 0.6s 0.44s cubic-bezier(0.16,1,0.3,1) forwards;
-  }
-  .connect-btn:active { transform: scale(0.97); box-shadow: 0 4px 15px rgba(124,92,255,0.4); }
-  .connect-btn svg { width: 19px; height: 19px; }
-  .ripple {
-    position: absolute; border-radius: 50%;
-    background: rgba(255,255,255,0.35);
-    transform: scale(0); animation: ripple 0.6s ease-out;
-    pointer-events: none;
-  }
-  @keyframes ripple { to { transform: scale(4); opacity: 0; } }
-
-  .platform-tip {
-    text-align: center; font-size: 11px; color: var(--text-dim);
-    padding: 8px 12px; background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;
-    margin-bottom: 14px; line-height: 1.4;
-    opacity: 0; animation: fadeUp 0.6s 0.56s cubic-bezier(0.16,1,0.3,1) forwards;
-  }
-  .platform-tip strong { color: var(--accent2); }
 
   .info-group { display: flex; flex-direction: column; gap: 8px; }
   .info-row {
@@ -137,8 +107,8 @@
     transition: background 0.2s;
     opacity: 0; animation: fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
   }
-  .info-row:nth-child(1) { animation-delay: 0.68s; }
-  .info-row:nth-child(2) { animation-delay: 0.78s; }
+  .info-row:nth-child(1) { animation-delay: 0.44s; }
+  .info-row:nth-child(2) { animation-delay: 0.54s; }
   .info-label {
     font-size: 10px; color: var(--text-faint); text-transform: uppercase;
     letter-spacing: 0.8px; margin-bottom: 2px; font-weight: 500;
@@ -216,24 +186,12 @@
       </div>
       <div class="title">欢迎连接 Wi-Fi</div>
       <div class="ssid-text" id="ssidText">—</div>
-      <div class="subtitle" id="subtitle">点击下方按钮一键连接</div>
+      <div class="subtitle" id="subtitle">扫码即可自动连接</div>
     </div>
 
     <div class="qr-section">
       <div class="qr-box" id="qrBox"><div id="qrcode"></div></div>
     </div>
-
-    <a id="connectBtn" class="connect-btn" href="#">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
-        <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
-        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
-        <line x1="12" y1="20" x2="12.01" y2="20"></line>
-      </svg>
-      <span id="connectBtnText">一键连接 Wi-Fi</span>
-    </a>
-
-    <div class="platform-tip" id="platformTip"></div>
 
     <div class="info-group">
       <div class="info-row">
@@ -360,9 +318,6 @@
     const pwdRow = document.getElementById('pwdRow');
     const ssidText = document.getElementById('ssidText');
     const toggleBtn = document.getElementById('togglePwd');
-    const connectBtn = document.getElementById('connectBtn');
-    const connectBtnText = document.getElementById('connectBtnText');
-    const platformTip = document.getElementById('platformTip');
     const subtitle = document.getElementById('subtitle');
     const qrcodeEl = document.getElementById('qrcode');
     const copyBtn = document.querySelector('.copy-btn');
@@ -393,47 +348,22 @@
       const qr = qrcode(0, 'M');
       qr.addData(buildWifiString(cfg));
       qr.make();
-      qrcodeEl.innerHTML = qr.createImgTag(4, 6);
+      qrcodeEl.innerHTML = qr.createImgTag(6, 8);
     } catch(e) {
       qrcodeEl.innerHTML = '<div style="color:#999;padding:20px;text-align:center;font-size:12px;">二维码生成失败</div>';
     }
 
     const ua = navigator.userAgent.toLowerCase();
     const isIOS = /iphone|ipad|ipod/.test(ua);
-    const isAndroid = /android/.test(ua);
     const isWeChat = /micromessenger/.test(ua);
-    const wifiStr = buildWifiString(cfg);
 
     if (isIOS) {
-      connectBtnText.textContent = '长按二维码保存连接';
-      connectBtn.removeAttribute('href');
-      connectBtn.addEventListener('click', (e) => { e.preventDefault(); });
-      platformTip.innerHTML = '<strong>iOS</strong>：长按二维码存到照片，在相册长按识别即可连接';
-      subtitle.textContent = '保存二维码即可自动连接';
-    } else if (isAndroid && !isWeChat) {
-      connectBtn.href = wifiStr;
-      platformTip.innerHTML = '<strong>Android</strong>：点击按钮，系统弹出连接确认';
+      subtitle.textContent = '长按二维码存到照片即可连接';
     } else if (isWeChat) {
-      connectBtnText.textContent = '请在浏览器中打开';
-      connectBtn.removeAttribute('href');
-      platformTip.innerHTML = '<strong>微信内无法连接</strong>：右上角 ··· → 在浏览器中打开';
+      subtitle.textContent = '请在浏览器中打开后扫码连接';
     } else {
-      connectBtn.href = wifiStr;
-      platformTip.innerHTML = '<strong>提示</strong>：请在手机浏览器中打开以使用一键连接';
+      subtitle.textContent = '扫码即可自动连接';
     }
-
-    // 涟漪效果
-    connectBtn.addEventListener('click', function(e) {
-      const rect = this.getBoundingClientRect();
-      const ripple = document.createElement('span');
-      ripple.className = 'ripple';
-      const size = Math.max(rect.width, rect.height);
-      ripple.style.width = ripple.style.height = size + 'px';
-      ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
-      ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
-      this.appendChild(ripple);
-      setTimeout(() => ripple.remove(), 600);
-    });
 
     // 复制密码
     copyBtn.addEventListener('click', () => {
