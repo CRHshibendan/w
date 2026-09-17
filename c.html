@@ -348,7 +348,7 @@
       const qr = qrcode(0, 'M');
       qr.addData(buildWifiString(cfg));
       qr.make();
-      qrcodeEl.innerHTML = qr.createImgTag(6, 8);
+      qrcodeEl.innerHTML = qr.createImgTag(8, 10);
     } catch(e) {
       qrcodeEl.innerHTML = '<div style="color:#999;padding:20px;text-align:center;font-size:12px;">二维码生成失败</div>';
     }
