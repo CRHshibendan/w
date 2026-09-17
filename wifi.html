@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Wi-Fi 连接</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", sans-serif;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #1a1a2e;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  .card {
+    width: 100%;
+    max-width: 360px;
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 24px 22px 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    animation: fadeUp 0.5s ease-out;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .header { text-align: center; margin-bottom: 14px; }
+  .wifi-icon {
+    width: 48px; height: 48px;
+    margin: 0 auto 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .wifi-icon svg { width: 100%; height: 100%; }
+  .wifi-icon .wave {
+    fill: none; stroke: #667eea; stroke-width: 3; stroke-linecap: round;
+    transform-origin: center;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .wifi-icon .wave:nth-child(2) { animation-delay: 0.3s; }
+  .wifi-icon .wave:nth-child(3) { animation-delay: 0.6s; }
+  .wifi-icon .dot { fill: #667eea; }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; transform: scale(0.85); }
+    50% { opacity: 1; transform: scale(1); }
+  }
+  .title { font-size: 19px; font-weight: 700; letter-spacing: -0.3px; }
+  .ssid-text {
+    font-size: 16px; font-weight: 700; color: #667eea;
+    margin-top: 2px; word-break: break-all;
+  }
+  .subtitle { font-size: 12px; color: #8a8a9e; margin-top: 3px; }
+
+  .qr-section { display: flex; justify-content: center; margin-bottom: 12px; }
+  .qr-box {
+    padding: 10px; background: #fff; border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(102,126,234,0.12);
+  }
+  #qrcode { display: block; }
+  #qrcode img { display: block; }
+
+  .connect-btn {
+    width: 100%; padding: 13px; border: none; border-radius: 14px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff; font-size: 15px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 6px 18px rgba(102,126,234,0.35);
+    transition: transform 0.15s, box-shadow 0.15s;
+    margin-bottom: 12px; text-decoration: none;
+  }
+  .connect-btn:active { transform: scale(0.97); box-shadow: 0 3px 10px rgba(102,126,234,0.3); }
+  .connect-btn svg { width: 19px; height: 19px; }
+
+  .platform-tip {
+    text-align: center; font-size: 11px; color: #8a8a9e;
+    padding: 7px 12px; background: #f5f6fa; border-radius: 10px;
+    margin-bottom: 12px; line-height: 1.4;
+  }
+  .platform-tip strong { color: #667eea; }
+
+  .info-group { display: flex; flex-direction: column; gap: 8px; }
+  .info-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px; background: #f5f6fa; border-radius: 12px;
+  }
+  .info-label {
+    font-size: 10px; color: #8a8a9e; text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 1px;
+  }
+  .info-value {
+    font-size: 14px; font-weight: 600; color: #1a1a2e;
+    word-break: break-all; flex: 1; min-width: 0; margin-right: 8px; user-select: all;
+  }
+  .copy-btn {
+    flex-shrink: 0; width: 32px; height: 32px; border: none;
+    background: #667eea; color: #fff; border-radius: 9px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: transform 0.15s;
+  }
+  .copy-btn:active { transform: scale(0.9); }
+  .copy-btn svg { width: 16px; height: 16px; }
+  .copy-btn.copied { background: #4caf50; }
+  .toggle-pwd {
+    flex-shrink: 0; width: 32px; height: 32px; border: none;
+    background: transparent; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; margin-right: 2px;
+  }
+  .toggle-pwd svg { width: 18px; height: 18px; color: #8a8a9e; }
+
+  .error-card {
+    text-align: center; padding: 30px 20px;
+  }
+  .error-card svg { width: 56px; height: 56px; color: #e74c3c; margin-bottom: 14px; }
+  .error-card h2 { font-size: 18px; margin-bottom: 8px; }
+  .error-card p { font-size: 13px; color: #8a8a9e; line-height: 1.5; }
+</style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="header">
+      <div class="wifi-icon">
+        <svg viewBox="0 0 64 64">
+          <path class="wave" d="M8 24 Q32 4 56 24"/>
+          <path class="wave" d="M16 32 Q32 14 48 32"/>
+          <path class="wave" d="M24 40 Q32 30 40 40"/>
+          <circle class="dot" cx="32" cy="48" r="4"/>
+        </svg>
+      </div>
+      <div class="title">欢迎连接 Wi-Fi</div>
+      <div class="ssid-text" id="ssidText">—</div>
+      <div class="subtitle" id="subtitle">点击下方按钮一键连接</div>
+    </div>
+
+    <div class="qr-section">
+      <div class="qr-box"><div id="qrcode"></div></div>
+    </div>
+
+    <a id="connectBtn" class="connect-btn" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+        <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+        <line x1="12" y1="20" x2="12.01" y2="20"></line>
+      </svg>
+      <span id="connectBtnText">一键连接 Wi-Fi</span>
+    </a>
+
+    <div class="platform-tip" id="platformTip"></div>
+
+    <div class="info-group">
+      <div class="info-row">
+        <div style="flex:1; min-width:0;">
+          <div class="info-label">网络名称</div>
+          <div class="info-value" id="ssid">—</div>
+        </div>
+        <button class="copy-btn" data-copy="ssid" aria-label="复制">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="info-row" id="pwdRow">
+        <div style="flex:1; min-width:0;">
+          <div class="info-label">密码</div>
+          <div class="info-value" id="password">—</div>
+        </div>
+        <button class="toggle-pwd" id="togglePwd" aria-label="显示/隐藏">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </button>
+        <button class="copy-btn" data-copy="password" aria-label="复制">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // 从 URL hash 解析 WiFi 配置
+  function parseConfig() {
+    const hash = location.hash.slice(1);
+    if (!hash) return null;
+    try {
+      const json = decodeURIComponent(escape(atob(hash)));
+      const obj = JSON.parse(json);
+      return {
+        ssid: obj.s,
+        password: obj.p || '',
+        encryption: obj.e || 'WPA',
+        hidden: false
+      };
+    } catch(e) {
+      return null;
+    }
+  }
+
+  const cfg = parseConfig();
+  const card = document.getElementById('card');
+
+  if (!cfg || !cfg.ssid) {
+    card.innerHTML = `
+      <div class="error-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <h2>链接无效</h2>
+        <p>该 WiFi 链接已失效或格式错误<br>请通过母站重新生成</p>
+      </div>`;
+  } else {
+    const ssidEl = document.getElementById('ssid');
+    const pwdEl = document.getElementById('password');
+    const pwdRow = document.getElementById('pwdRow');
+    const ssidText = document.getElementById('ssidText');
+    const toggleBtn = document.getElementById('togglePwd');
+    const connectBtn = document.getElementById('connectBtn');
+    const connectBtnText = document.getElementById('connectBtnText');
+    const platformTip = document.getElementById('platformTip');
+    const subtitle = document.getElementById('subtitle');
+    const qrcodeEl = document.getElementById('qrcode');
+
+    ssidEl.textContent = cfg.ssid;
+    ssidText.textContent = cfg.ssid;
+
+    let pwdVisible = false;
+    function renderPwd() {
+      pwdEl.textContent = pwdVisible ? cfg.password : '••••••••';
+      pwdEl.style.letterSpacing = pwdVisible ? 'normal' : '2px';
+    }
+
+    if (cfg.encryption === 'nopass') {
+      pwdRow.style.display = 'none';
+    } else {
+      renderPwd();
+      toggleBtn.addEventListener('click', () => {
+        pwdVisible = !pwdVisible;
+        renderPwd();
+      });
+    }
+
+    function buildWifiString(c) {
+      const esc = (s) => String(s).replace(/([\\;,":])/g, '\\$1');
+      if (c.encryption === 'nopass') {
+        return `WIFI:T:nopass;S:${esc(c.ssid)};${c.hidden ? 'H:true;' : ''};`;
+      }
+      return `WIFI:T:${c.encryption};S:${esc(c.ssid)};P:${esc(c.password)};${c.hidden ? 'H:true;' : ''};`;
+    }
+
+    // 二维码
+    try {
+      const qr = qrcode(0, 'M');
+      qr.addData(buildWifiString(cfg));
+      qr.make();
+      qrcodeEl.innerHTML = qr.createImgTag(4, 6);
+    } catch(e) {
+      qrcodeEl.innerHTML = '<div style="color:#999;padding:20px;text-align:center;font-size:12px;">二维码生成失败</div>';
+    }
+
+    // 平台适配
+    const ua = navigator.userAgent.toLowerCase();
+    const isIOS = /iphone|ipad|ipod/.test(ua);
+    const isAndroid = /android/.test(ua);
+    const isWeChat = /micromessenger/.test(ua);
+    const wifiStr = buildWifiString(cfg);
+
+    if (isIOS) {
+      connectBtnText.textContent = '长按二维码保存连接';
+      connectBtn.removeAttribute('href');
+      connectBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        qrcodeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+      platformTip.innerHTML = '<strong>iOS</strong>：长按二维码存到照片，在相册长按识别即可连接';
+      subtitle.textContent = '保存二维码即可自动连接';
+    } else if (isAndroid && !isWeChat) {
+      connectBtn.href = wifiStr;
+      platformTip.innerHTML = '<strong>Android</strong>：点击按钮，系统弹出连接确认';
+    } else if (isWeChat) {
+      connectBtnText.textContent = '请在浏览器中打开';
+      connectBtn.removeAttribute('href');
+      platformTip.innerHTML = '<strong>微信内无法连接</strong>：右上角 ··· → 在浏览器中打开';
+    } else {
+      connectBtn.href = wifiStr;
+      platformTip.innerHTML = '<strong>提示</strong>：请在手机浏览器中打开以使用一键连接';
+    }
+
+    // 复制
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const target = btn.dataset.copy;
+        const text = cfg[target];
+        try { await navigator.clipboard.writeText(text); }
+        catch(err) {
+          const ta = document.createElement('textarea');
+          ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); } catch(e){}
+          document.body.removeChild(ta);
+        }
+        btn.classList.add('copied');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+        }, 1500);
+      });
+    });
+  }
+</script>
+</body>
+</html>
