@@ -2,61 +2,77 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Wi-Fi 连接</title>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", sans-serif;
+    height: 100vh;
+    height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 16px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: #1a1a2e;
+    overflow: hidden;
     -webkit-font-smoothing: antialiased;
   }
 
   .card {
     width: 100%;
-    max-width: 380px;
-    background: rgba(255, 255, 255, 0.95);
+    max-width: 360px;
+    background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-radius: 28px;
-    padding: 36px 28px;
+    border-radius: 24px;
+    padding: 24px 22px 20px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
-    animation: fadeUp 0.6s ease-out;
+    position: relative;
+    animation: fadeUp 0.5s ease-out;
   }
 
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(16px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
+  .settings-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.4;
+    transition: opacity 0.2s, transform 0.3s;
+  }
+  .settings-btn:active { opacity: 1; }
+  .settings-btn:hover { opacity: 0.7; }
+  .settings-btn svg { width: 20px; height: 20px; color: #8a8a9e; }
+
   .header {
     text-align: center;
-    margin-bottom: 28px;
+    margin-bottom: 14px;
   }
 
   .wifi-icon {
-    width: 64px;
-    height: 64px;
-    margin: 0 auto 16px;
-    position: relative;
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 10px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-
-  .wifi-icon svg {
-    width: 100%;
-    height: 100%;
-  }
-
+  .wifi-icon svg { width: 100%; height: 100%; }
   .wifi-icon .wave {
     fill: none;
     stroke: #667eea;
@@ -75,208 +91,257 @@
   }
 
   .title {
-    font-size: 22px;
+    font-size: 19px;
     font-weight: 700;
     color: #1a1a2e;
     letter-spacing: -0.3px;
   }
 
   .subtitle {
-    font-size: 13px;
+    font-size: 12px;
     color: #8a8a9e;
-    margin-top: 4px;
+    margin-top: 3px;
   }
 
   .qr-section {
     display: flex;
     justify-content: center;
-    margin-bottom: 28px;
+    margin-bottom: 12px;
   }
 
   .qr-box {
-    padding: 16px;
+    padding: 10px;
     background: #fff;
-    border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.12);
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.12);
   }
 
   #qrcode { display: block; }
-
-  .tip {
-    text-align: center;
-    font-size: 12px;
-    color: #8a8a9e;
-    margin-top: 10px;
-  }
-
-  .info-group {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-
-  .info-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 16px;
-    background: #f5f6fa;
-    border-radius: 14px;
-    transition: background 0.2s;
-  }
-
-  .info-row:active {
-    background: #eceef5;
-  }
-
-  .info-label {
-    font-size: 11px;
-    color: #8a8a9e;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 2px;
-  }
-
-  .info-value {
-    font-size: 15px;
-    font-weight: 600;
-    color: #1a1a2e;
-    word-break: break-all;
-    flex: 1;
-    min-width: 0;
-    margin-right: 12px;
-    user-select: all;
-  }
-
-  .copy-btn {
-    flex-shrink: 0;
-    width: 36px;
-    height: 36px;
-    border: none;
-    background: #667eea;
-    color: #fff;
-    border-radius: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.15s, opacity 0.2s;
-  }
-
-  .copy-btn:active { transform: scale(0.9); }
-  .copy-btn svg { width: 18px; height: 18px; }
-
-  .copy-btn.copied {
-    background: #4caf50;
-  }
-
-  .toggle-pwd {
-    flex-shrink: 0;
-    width: 36px;
-    height: 36px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 4px;
-  }
-  .toggle-pwd svg { width: 20px; height: 20px; color: #8a8a9e; }
+  #qrcode img { display: block; }
 
   .connect-btn {
     width: 100%;
-    padding: 16px;
+    padding: 13px;
     border: none;
-    border-radius: 16px;
+    border-radius: 14px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: #fff;
-    font-size: 17px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.35);
-    transition: transform 0.15s, box-shadow 0.15s;
-    margin-bottom: 16px;
-  }
-  .connect-btn:active {
-    transform: scale(0.97);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-  }
-  .connect-btn svg { width: 22px; height: 22px; }
-
-  .platform-tip {
-    text-align: center;
-    font-size: 12px;
-    color: #8a8a9e;
-    padding: 10px 14px;
-    background: #f5f6fa;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    line-height: 1.5;
-  }
-  .platform-tip strong { color: #667eea; }
-
-  .alt-btn {
-    width: 100%;
-    padding: 12px;
-    border: 1.5px solid #667eea;
-    border-radius: 14px;
-    background: transparent;
-    color: #667eea;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    margin-bottom: 16px;
-    transition: background 0.15s, transform 0.15s;
+    box-shadow: 0 6px 18px rgba(102, 126, 234, 0.35);
+    transition: transform 0.15s, box-shadow 0.15s;
+    margin-bottom: 12px;
+    text-decoration: none;
   }
-  .alt-btn:active {
-    background: rgba(102, 126, 234, 0.08);
-    transform: scale(0.98);
+  .connect-btn:active {
+    transform: scale(0.97);
+    box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
   }
-  .alt-btn svg { width: 18px; height: 18px; }
+  .connect-btn svg { width: 19px; height: 19px; }
 
-  .step-guide {
-    background: #f5f6fa;
-    border-radius: 14px;
-    padding: 14px 16px;
-    margin-bottom: 20px;
-  }
-  .step-guide-title {
-    font-size: 12px;
-    font-weight: 600;
-    color: #667eea;
-    margin-bottom: 8px;
-  }
-  .step-guide ol {
-    padding-left: 18px;
-    font-size: 12px;
-    color: #5a5a6e;
-    line-height: 1.8;
-  }
-  .step-guide ol li::marker {
-    color: #667eea;
-    font-weight: 600;
-  }
-
-  .footer-note {
+  .platform-tip {
     text-align: center;
     font-size: 11px;
-    color: #b0b0c0;
-    margin-top: 8px;
+    color: #8a8a9e;
+    padding: 7px 12px;
+    background: #f5f6fa;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+  .platform-tip strong { color: #667eea; }
+
+  .info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: #f5f6fa;
+    border-radius: 12px;
+  }
+
+  .info-label {
+    font-size: 10px;
+    color: #8a8a9e;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1px;
+  }
+
+  .info-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a2e;
+    word-break: break-all;
+    flex: 1;
+    min-width: 0;
+    margin-right: 8px;
+    user-select: all;
+  }
+
+  .copy-btn {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: #667eea;
+    color: #fff;
+    border-radius: 9px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s;
+  }
+  .copy-btn:active { transform: scale(0.9); }
+  .copy-btn svg { width: 16px; height: 16px; }
+  .copy-btn.copied { background: #4caf50; }
+
+  .toggle-pwd {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 2px;
+  }
+  .toggle-pwd svg { width: 18px; height: 18px; color: #8a8a9e; }
+
+  /* 设置弹窗 */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .modal {
+    width: 100%;
+    max-width: 340px;
+    background: #fff;
+    border-radius: 20px;
+    padding: 22px 20px;
+    transform: scale(0.95);
+    transition: transform 0.25s;
+  }
+  .modal-overlay.show .modal { transform: scale(1); }
+
+  .modal-title {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    text-align: center;
+    color: #1a1a2e;
+  }
+
+  .form-group {
+    margin-bottom: 14px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    color: #8a8a9e;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .form-group input, .form-group select {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1.5px solid #e8e8f0;
+    border-radius: 11px;
+    font-size: 14px;
+    background: #f8f9fc;
+    color: #1a1a2e;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus {
+    border-color: #667eea;
+    background: #fff;
+  }
+
+  .modal-btns {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .modal-btns button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.15s;
+  }
+  .modal-btns button:active { transform: scale(0.97); }
+  .btn-cancel {
+    background: #f0f1f5;
+    color: #5a5a6e;
+  }
+  .btn-save {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+  }
+
+  .toast {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 13px;
+    z-index: 200;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 </style>
 </head>
 <body>
   <div class="card">
+    <button class="settings-btn" id="settingsBtn" aria-label="设置">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+    </button>
+
     <div class="header">
       <div class="wifi-icon">
         <svg viewBox="0 0 64 64">
@@ -288,6 +353,12 @@
       </div>
       <div class="title">欢迎连接 Wi-Fi</div>
       <div class="subtitle" id="subtitle">点击下方按钮一键连接</div>
+    </div>
+
+    <div class="qr-section">
+      <div class="qr-box">
+        <div id="qrcode"></div>
+      </div>
     </div>
 
     <a id="connectBtn" class="connect-btn" href="#">
@@ -302,39 +373,31 @@
 
     <div class="platform-tip" id="platformTip"></div>
 
-    <div class="qr-section">
-      <div class="qr-box">
-        <div id="qrcode"></div>
-      </div>
-    </div>
-    <div class="tip">📷 使用手机相机扫描二维码即可自动连接</div>
-
-    <div class="info-group" style="margin-top: 24px;">
+    <div class="info-group">
       <div class="info-row">
         <div style="flex:1; min-width:0;">
           <div class="info-label">网络名称</div>
           <div class="info-value" id="ssid">—</div>
         </div>
-        <button class="copy-btn" data-copy="ssid" aria-label="复制网络名称">
+        <button class="copy-btn" data-copy="ssid" aria-label="复制">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
           </svg>
         </button>
       </div>
-
       <div class="info-row">
         <div style="flex:1; min-width:0;">
           <div class="info-label">密码</div>
           <div class="info-value" id="password">—</div>
         </div>
-        <button class="toggle-pwd" id="togglePwd" aria-label="显示/隐藏密码">
+        <button class="toggle-pwd" id="togglePwd" aria-label="显示/隐藏">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
             <circle cx="12" cy="12" r="3"></circle>
           </svg>
         </button>
-        <button class="copy-btn" data-copy="password" aria-label="复制密码">
+        <button class="copy-btn" data-copy="password" aria-label="复制">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -342,217 +405,139 @@
         </button>
       </div>
     </div>
-
-    <div class="footer-note">触碰 NFC 贴纸自动打开本页面</div>
   </div>
 
+  <!-- 设置弹窗 -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-title">设置 Wi-Fi 信息</div>
+      <div class="form-group">
+        <label>网络名称 (SSID)</label>
+        <input type="text" id="inputSsid" placeholder="请输入 Wi-Fi 名称">
+      </div>
+      <div class="form-group">
+        <label>密码</label>
+        <input type="text" id="inputPassword" placeholder="请输入 Wi-Fi 密码">
+      </div>
+      <div class="form-group">
+        <label>加密方式</label>
+        <select id="inputEncryption">
+          <option value="WPA">WPA / WPA2 / WPA3</option>
+          <option value="WEP">WEP</option>
+          <option value="nopass">无密码</option>
+        </select>
+      </div>
+      <div class="modal-btns">
+        <button class="btn-cancel" id="cancelBtn">取消</button>
+        <button class="btn-save" id="saveBtn">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
 <script>
-  // ======== 在这里配置你家的 Wi-Fi 信息 ========
-  const WIFI_CONFIG = {
-    ssid: "13501",           // 你家的 Wi-Fi 名称
-    password: "12345678",    // 你家的 Wi-Fi 密码
-    encryption: "WPA",       // WPA / WEP / nopass
-    hidden: false            // 是否隐藏网络
+  // 默认 Wi-Fi 配置
+  const DEFAULT_CONFIG = {
+    ssid: "13501",
+    password: "12345678",
+    encryption: "WPA",
+    hidden: false
   };
-  // ============================================
+
+  // 从 localStorage 读取配置，没有则用默认
+  let wifiConfig;
+  try {
+    const saved = localStorage.getItem('wifi_config');
+    wifiConfig = saved ? JSON.parse(saved) : { ...DEFAULT_CONFIG };
+  } catch(e) {
+    wifiConfig = { ...DEFAULT_CONFIG };
+  }
 
   const ssidEl = document.getElementById('ssid');
   const pwdEl = document.getElementById('password');
   const toggleBtn = document.getElementById('togglePwd');
-
-  ssidEl.textContent = WIFI_CONFIG.ssid;
-  pwdEl.textContent = WIFI_CONFIG.password;
+  const connectBtn = document.getElementById('connectBtn');
+  const connectBtnText = document.getElementById('connectBtnText');
+  const platformTip = document.getElementById('platformTip');
+  const subtitle = document.getElementById('subtitle');
+  const qrcodeEl = document.getElementById('qrcode');
 
   let pwdVisible = false;
+
+  function buildWifiString(cfg) {
+    const esc = (s) => String(s).replace(/([\\;,":])/g, '\\$1');
+    if (cfg.encryption === 'nopass') {
+      return `WIFI:T:nopass;S:${esc(cfg.ssid)};${cfg.hidden ? 'H:true;' : ''};`;
+    }
+    return `WIFI:T:${cfg.encryption};S:${esc(cfg.ssid)};P:${esc(cfg.password)};${cfg.hidden ? 'H:true;' : ''};`;
+  }
+
   function renderPwd() {
-    pwdEl.textContent = pwdVisible ? WIFI_CONFIG.password : '••••••••';
+    pwdEl.textContent = pwdVisible ? wifiConfig.password : '••••••••';
     pwdEl.style.letterSpacing = pwdVisible ? 'normal' : '2px';
   }
-  renderPwd();
+
+  function renderQr() {
+    try {
+      const qr = qrcode(0, 'M');
+      qr.addData(buildWifiString(wifiConfig));
+      qr.make();
+      qrcodeEl.innerHTML = qr.createImgTag(4, 6);
+    } catch (e) {
+      qrcodeEl.innerHTML = '<div style="color:#999;padding:20px;text-align:center;font-size:12px;">二维码生成失败</div>';
+    }
+  }
+
+  function setupConnectBtn() {
+    const ua = navigator.userAgent.toLowerCase();
+    const isIOS = /iphone|ipad|ipod/.test(ua);
+    const isAndroid = /android/.test(ua);
+    const isWeChat = /micromessenger/.test(ua);
+    const wifiStr = buildWifiString(wifiConfig);
+
+    if (isIOS) {
+      connectBtnText.textContent = '长按二维码保存连接';
+      connectBtn.removeAttribute('href');
+      connectBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        qrcodeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+      platformTip.innerHTML = '<strong>iOS</strong>：长按二维码存到照片，在相册长按识别即可连接';
+      subtitle.textContent = '保存二维码即可自动连接';
+    } else if (isAndroid && !isWeChat) {
+      connectBtn.href = wifiStr;
+      platformTip.innerHTML = '<strong>Android</strong>：点击按钮，系统弹出连接确认';
+    } else if (isWeChat) {
+      connectBtnText.textContent = '请在浏览器中打开';
+      connectBtn.removeAttribute('href');
+      platformTip.innerHTML = '<strong>微信内无法连接</strong>：右上角 ··· → 在浏览器中打开';
+    } else {
+      connectBtn.href = wifiStr;
+      platformTip.innerHTML = '<strong>提示</strong>：请在手机浏览器中打开以使用一键连接';
+    }
+  }
+
+  function renderAll() {
+    ssidEl.textContent = wifiConfig.ssid;
+    pwdVisible = false;
+    renderPwd();
+    renderQr();
+    setupConnectBtn();
+  }
+
+  renderAll();
 
   toggleBtn.addEventListener('click', () => {
     pwdVisible = !pwdVisible;
     renderPwd();
   });
 
-  // 生成 WiFi 二维码
-  function buildWifiString(cfg) {
-    const esc = (s) => String(s).replace(/([\\;,":])/g, '\\$1');
-    return `WIFI:T:${cfg.encryption};S:${esc(cfg.ssid)};P:${esc(cfg.password)};${cfg.hidden ? 'H:true;' : ''};`;
-  }
-
-  const wifiStr = buildWifiString(WIFI_CONFIG);
-
-  // 生成 iOS 描述文件（.mobileconfig）并下载
-  function downloadMobileConfig() {
-    const xmlEsc = (s) => String(s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&apos;');
-    const uuid = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-    const encType = WIFI_CONFIG.encryption === 'nopass' ? 'None' : WIFI_CONFIG.encryption;
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>PayloadContent</key>
-  <array>
-    <dict>
-      <key>AutoJoin</key>
-      <true/>
-      <key>EncryptionType</key>
-      <string>${xmlEsc(encType)}</string>
-      <key>HIDDEN_NETWORK</key>
-      <${WIFI_CONFIG.hidden}/>
-      <key>IsHotspot</key>
-      <false/>
-      <key>Password</key>
-      <string>${xmlEsc(WIFI_CONFIG.password)}</string>
-      <key>PayloadDescription</key>
-      <string>配置 Wi-Fi 连接</string>
-      <key>PayloadDisplayName</key>
-      <string>Wi-Fi (${xmlEsc(WIFI_CONFIG.ssid)})</string>
-      <key>PayloadIdentifier</key>
-      <string>com.apple.wifi.managed.${uuid()}</string>
-      <key>PayloadOrganization</key>
-      <string>Home</string>
-      <key>PayloadType</key>
-      <string>com.apple.wifi.managed</string>
-      <key>PayloadUUID</key>
-      <string>${uuid()}</string>
-      <key>PayloadVersion</key>
-      <integer>1</integer>
-      <key>ProxyType</key>
-      <string>None</string>
-      <key>SSID_STR</key>
-      <string>${xmlEsc(WIFI_CONFIG.ssid)}</string>
-    </dict>
-  </array>
-  <key>PayloadDisplayName</key>
-  <string>Wi-Fi 连接配置</string>
-  <key>PayloadIdentifier</key>
-  <string>com.home.wifi.${uuid()}</string>
-  <key>PayloadRemovalDisallowed</key>
-  <false/>
-  <key>PayloadType</key>
-  <string>Configuration</string>
-  <key>PayloadUUID</key>
-  <string>${uuid()}</string>
-  <key>PayloadVersion</key>
-  <integer>1</integer>
-</dict>
-</plist>`;
-    const blob = new Blob([xml], { type: 'application/x-apple-aspen-config' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'wifi-connect.mobileconfig';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }
-
-  // 平台检测
-  const ua = navigator.userAgent.toLowerCase();
-  const isIOS = /iphone|ipad|ipod/.test(ua);
-  const isAndroid = /android/.test(ua);
-  const isWeChat = /micromessenger/.test(ua);
-
-  const connectBtn = document.getElementById('connectBtn');
-  const connectBtnText = document.getElementById('connectBtnText');
-  const platformTip = document.getElementById('platformTip');
-  const subtitle = document.getElementById('subtitle');
-
-  if (isIOS) {
-    // iOS：方案一 保存二维码到相册识别；方案二 安装描述文件
-    connectBtnText.textContent = '保存二维码一键连接';
-    connectBtn.removeAttribute('href');
-    connectBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      document.querySelector('.qr-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
-
-    // 步骤引导
-    const guide = document.createElement('div');
-    guide.className = 'step-guide';
-    guide.innerHTML = `
-      <div class="step-guide-title">📱 连接步骤（约 10 秒）</div>
-      <ol>
-        <li>长按下方二维码，选择「存储到照片」</li>
-        <li>打开「照片」App，找到刚才的二维码图片</li>
-        <li>长按图片中的二维码，点击「加入网络」</li>
-      </ol>
-    `;
-    platformTip.parentNode.insertBefore(guide, platformTip);
-
-    // 方案二：安装描述文件
-    const altBtn = document.createElement('a');
-    altBtn.className = 'alt-btn';
-    altBtn.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-        <polyline points="7 10 12 15 17 10"></polyline>
-        <line x1="12" y1="15" x2="12" y2="3"></line>
-      </svg>
-      <span>安装描述文件连接（备选）</span>
-    `;
-    altBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      downloadMobileConfig();
-    });
-    connectBtn.parentNode.insertBefore(altBtn, connectBtn.nextSibling);
-
-    const altGuide = document.createElement('div');
-    altGuide.className = 'step-guide';
-    altGuide.innerHTML = `
-      <div class="step-guide-title">📋 描述文件安装步骤</div>
-      <ol>
-        <li>点击上方按钮下载描述文件</li>
-        <li>打开「设置」→「已下载描述文件」</li>
-        <li>点击「安装」，输入锁屏密码</li>
-        <li>安装完成后自动连接 Wi-Fi</li>
-      </ol>
-    `;
-    altBtn.parentNode.insertBefore(altGuide, altBtn.nextSibling);
-
-    subtitle.textContent = '两种方式任选，推荐保存二维码';
-  } else if (isAndroid && !isWeChat) {
-    // Android 浏览器：使用 WIFI: URI 触发系统连接
-    connectBtn.href = wifiStr;
-    platformTip.innerHTML = '<strong>Android 用户</strong>：点击上方按钮，系统会弹出连接确认，点击即可连接';
-    connectBtn.addEventListener('click', () => {
-      setTimeout(() => {
-        platformTip.innerHTML = '<strong>如果没有弹出连接窗口</strong>：请使用相机扫描下方二维码';
-      }, 1500);
-    });
-  } else if (isWeChat) {
-    // 微信内置浏览器不支持 WIFI: URI
-    connectBtnText.textContent = '请在浏览器中打开';
-    connectBtn.removeAttribute('href');
-    platformTip.innerHTML = '<strong>微信内无法直接连接</strong>：请点击右上角「···」选择「在浏览器中打开」';
-  } else {
-    // 桌面端等：提供 WIFI: URI 但提示可能无效
-    connectBtn.href = wifiStr;
-    platformTip.innerHTML = '<strong>提示</strong>：请在手机浏览器中打开本页面以使用一键连接';
-  }
-
-  try {
-    const qr = qrcode(0, 'M');
-    qr.addData(wifiStr);
-    qr.make();
-    document.getElementById('qrcode').innerHTML = qr.createImgTag(6, 8);
-  } catch (e) {
-    document.getElementById('qrcode').innerHTML = '<div style="color:#999;padding:40px;text-align:center;">二维码生成失败</div>';
-  }
-
   // 复制功能
   document.querySelectorAll('.copy-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
       const target = btn.dataset.copy;
-      const text = WIFI_CONFIG[target];
+      const text = wifiConfig[target];
       try {
         await navigator.clipboard.writeText(text);
       } catch (err) {
@@ -572,6 +557,60 @@
         btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
       }, 1500);
     });
+  });
+
+  // 设置弹窗
+  const modalOverlay = document.getElementById('modalOverlay');
+  const settingsBtn = document.getElementById('settingsBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const saveBtn = document.getElementById('saveBtn');
+  const inputSsid = document.getElementById('inputSsid');
+  const inputPassword = document.getElementById('inputPassword');
+  const inputEncryption = document.getElementById('inputEncryption');
+
+  function openModal() {
+    inputSsid.value = wifiConfig.ssid;
+    inputPassword.value = wifiConfig.password;
+    inputEncryption.value = wifiConfig.encryption;
+    modalOverlay.classList.add('show');
+  }
+
+  function closeModal() {
+    modalOverlay.classList.remove('show');
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+
+  settingsBtn.addEventListener('click', openModal);
+  cancelBtn.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) closeModal();
+  });
+
+  saveBtn.addEventListener('click', () => {
+    const ssid = inputSsid.value.trim();
+    const password = inputPassword.value;
+    const encryption = inputEncryption.value;
+    if (!ssid) {
+      showToast('请输入 Wi-Fi 名称');
+      return;
+    }
+    if (encryption !== 'nopass' && !password) {
+      showToast('请输入 Wi-Fi 密码');
+      return;
+    }
+    wifiConfig = { ssid, password, encryption, hidden: false };
+    try {
+      localStorage.setItem('wifi_config', JSON.stringify(wifiConfig));
+    } catch(e) {}
+    closeModal();
+    renderAll();
+    showToast('保存成功');
   });
 </script>
 </body>
